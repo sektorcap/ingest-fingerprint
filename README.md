@@ -2,6 +2,11 @@
 
 Fingerprint a field using by replacing values with a consistent HMAC function.
 
+**Important**
+
+**The project name is changed: now is [ingest-anonymize](https://github.com/sektorcap/ingest-anonymize).**
+
+
 ## Fingerprint Options
 | Name | Required | Default | Description |
 |------|----------|---------|-------------|
