@@ -5,8 +5,8 @@ Fingerprint a field using by replacing values with a consistent HMAC function.
 ## Fingerprint Options
 | Name | Required | Default | Description |
 |------|----------|---------|-------------|
-|`source`|yes|-|The field to fingerprint. The field in the document can be a string or an array.|
-|`target`|no|`source`-hash|The field to assign the fingerprint value to.|
+|`field`|yes|-|The field to fingerprint. The field in the document can be a string or an array.|
+|`target_field`|no|`field`-hash|The field to assign the fingerprint value to.|
 |`key`|no|supersecrethere|The key value used for the `hmac`.|
 |`method`|no|HmacSHA1|Hmac algorithm to use. See [here](https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Mac) for a complete list.|
 
@@ -19,8 +19,8 @@ PUT _ingest/pipeline/fingerprint-pipeline
   "processors": [
     {
       "fingerprint" : {
-        "source" : "my_field",
-        "target" : "hash",
+        "field" : "my_field",
+        "target_field" : "hash",
         "key"    : "testkey",
         "method" : "HmacSHA256"
       }
@@ -38,7 +38,7 @@ GET /my-index/my-type/1
   "_index": "my-index",
   "_type": "my-type",
   "_id": "1",
-  "_version": 12,
+  "_version": 1,
   "found": true,
   "_source": {
     "my_field": [
@@ -47,9 +47,9 @@ GET /my-index/my-type/1
       "my_value3"
     ],
     "hash": [
-      "a2e77314d4685a5d2cd21e94ff5a8cb332b55ca761a47eb3356e65afd8348b3",
-      "4f0499a1110f023cac3b0624600c81b03a0250fd6caa758199f29f3e7da495b3",
-      "7b6ee3bec364e65802d30c04633424c59ffedb68c3b3cb9d9445c74e7e6d35c3"
+      "a4b12fddb3fd1389dec57010bd7b8c68c0f613d07115b8a5b1fd166a981c93fa",
+      "a9b22cef4d3cbd2dbb80f6209faa637d7d7ef96dbeb06bf10fac47eb23813859",
+      "33510269cdd2ac8b819a85cc12cbd1a7948fa5abf695944c0250488334d2ce61"
     ]
   }
 }
@@ -64,11 +64,11 @@ GET /my-index/my-type/2
   "_index": "my-index",
   "_type": "my-type",
   "_id": "2",
-  "_version": 10,
+  "_version": 1,
   "found": true,
   "_source": {
     "my_field": "Some content",
-    "hash": "e76f918a5f7c69775512ec8dbe743a1cda17420e48a1d5ab38dec6b08b9cba5b"
+    "hash": "575c4b3e2f145755709b94c92973b3263997544cf26b478c5a34cdb12b47bbc8"
   }
 }
 ```

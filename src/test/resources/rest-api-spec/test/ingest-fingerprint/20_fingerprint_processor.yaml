@@ -9,7 +9,7 @@
             "processors": [
               {
                 "fingerprint" : {
-                  "source" : "field1"
+                  "field" : "field1"
                 }
               }
             ]
@@ -61,8 +61,8 @@
             "processors": [
               {
                 "fingerprint" : {
-                  "source" : "field1",
-                  "target" : "field2",
+                  "field" : "field1",
+                  "target_field" : "field2",
                   "key"    : "very_secret_key",
                   "method" : "HmacSHA256"
                 }

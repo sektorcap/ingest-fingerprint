@@ -37,15 +37,15 @@ public class FingerprintProcessor extends AbstractProcessor {
 
     public static final String TYPE = "fingerprint";
 
-    private final String source;
-    private final String target;
+    private final String field;
+    private final String target_field;
     private final String key;
     private final String method;
 
-    public FingerprintProcessor(String tag, String source, String target, String key, String method) throws IOException {
+    public FingerprintProcessor(String tag, String field, String target_field, String key, String method) throws IOException {
         super(tag);
-        this.source = source;
-        this.target = target;
+        this.field = field;
+        this.target_field = target_field;
         this.key = key;
         this.method = method;
     }
@@ -54,12 +54,12 @@ public class FingerprintProcessor extends AbstractProcessor {
     public void execute(IngestDocument ingestDocument) throws Exception {
         List<?> list = null;
         try {
-          String in = ingestDocument.getFieldValue(source, String.class);
+          String in = ingestDocument.getFieldValue(field, String.class);
           list = new ArrayList<>(Arrays.asList(in));
         } catch (IllegalArgumentException e) {
-          list = ingestDocument.getFieldValue(source, ArrayList.class, true);
+          list = ingestDocument.getFieldValue(field, ArrayList.class, true);
           if (list == null)
-              throw new IllegalArgumentException("field [" + source + "] is null, cannot do fingerprint.");
+              throw new IllegalArgumentException("field [" + field + "] is null, cannot do fingerprint.");
         }
 
         Mac mac = Mac.getInstance(method);
@@ -73,9 +73,9 @@ public class FingerprintProcessor extends AbstractProcessor {
             outcontent.add(hash);
         }
         if (outcontent.size() == 1)
-          ingestDocument.setFieldValue(target, outcontent.get(0));
+          ingestDocument.setFieldValue(target_field, outcontent.get(0));
         else
-          ingestDocument.setFieldValue(target, outcontent);
+          ingestDocument.setFieldValue(target_field, outcontent);
     }
 
     @Override
@@ -88,11 +88,11 @@ public class FingerprintProcessor extends AbstractProcessor {
         @Override
         public FingerprintProcessor create(Map<String, Processor.Factory> factories, String tag, Map<String, Object> config)
             throws Exception {
-            String source = readStringProperty(TYPE, tag, config, "source");
-            String target = readStringProperty(TYPE, tag, config, "target", source +"-hash");
+            String field = readStringProperty(TYPE, tag, config, "field");
+            String target_field = readStringProperty(TYPE, tag, config, "target_field", field +"-hash");
             String key = readStringProperty(TYPE, tag, config, "key", "supersecrethere");
             String method = readStringProperty(TYPE, tag, config, "method", "HmacSHA1");
-            return new FingerprintProcessor(tag, source, target, key, method);
+            return new FingerprintProcessor(tag, field, target_field, key, method);
         }
     }
 }
